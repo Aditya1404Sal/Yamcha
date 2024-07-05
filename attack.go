@@ -119,3 +119,48 @@ func randomLoad(url string, numRequests, rate int, method string) []Result {
 	}
 	return resultSlice
 }
+
+func rampUpLoad(url string, numRequests int, rate int, method string, stepSize int) []Result {
+	var wg sync.WaitGroup
+	results := make(chan Result, numRequests)
+
+	for i := 1; i <= numRequests; i++ {
+		wg.Add(1)
+		go makeRequest(url, method, &wg, results)
+		if i%stepSize == 0 {
+			time.Sleep(time.Second / time.Duration(rate))
+		}
+	}
+	wg.Wait()
+	close(results)
+
+	resultSlice := make([]Result, 0, numRequests)
+	for result := range results {
+		resultSlice = append(resultSlice, result)
+	}
+	return resultSlice
+}
+
+func spikeLoad(url string, numRequests int, rate int, method string, spikeHeight int) []Result {
+	var wg sync.WaitGroup
+	results := make(chan Result, numRequests)
+
+	for i := 0; i < numRequests; i++ {
+		wg.Add(1)
+		go makeRequest(url, method, &wg, results)
+		if i%spikeHeight == 0 {
+			time.Sleep(time.Second * time.Duration(rand.Intn(20)))
+		} else {
+			time.Sleep(time.Second / time.Duration(rate))
+		}
+	}
+	wg.Wait()
+	close(results)
+
+	resultSlice := make([]Result, 0, numRequests)
+	for result := range results {
+		resultSlice = append(resultSlice, result)
+	}
+	return resultSlice
+
+}

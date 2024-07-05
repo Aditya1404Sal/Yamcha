@@ -18,6 +18,8 @@ func main() {
 	method := hfs.String("method", "GET", "HTTP method to use (GET, POST, etc.)")
 	rate := hfs.Int("rate", 1, "Number of requests per second")
 	burst := hfs.Int("burst", 5, "Number of bursts for burst load attack")
+	stepSize := hfs.Int("stepsize", 10, "step size for ramp up load")
+	spikeInterval := hfs.Int("spikeInterval", 10, "spike interval")
 	hfs.Parse(flag.Args())
 
 	runtime.GOMAXPROCS(*numCPUS)
@@ -31,6 +33,10 @@ func main() {
 		results = randomLoad(*url, *numReq, *rate, *method)
 	case "burst":
 		results = burstLoad(*url, *numReq, *rate, *method, *burst)
+	case "rampup":
+		results = rampUpLoad(*url, *numReq, *rate, *method, *stepSize)
+	case "spike":
+		results = spikeLoad(*url, *numReq, *rate, *method, *spikeInterval)
 	default:
 		fmt.Println("Unknown attack type:", *attacktype)
 		return
