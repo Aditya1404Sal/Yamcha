@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 	"sync"
 	"time"
@@ -71,6 +72,47 @@ func basicAttack(url string, numRequests int, rate int, method string) []Result 
 	wg.Wait()
 	close(results)
 
+	resultSlice := make([]Result, 0, numRequests)
+	for result := range results {
+		resultSlice = append(resultSlice, result)
+	}
+	return resultSlice
+}
+
+func burstLoad(url string, numRequests, rate int, method string, bursts int) []Result {
+	var wg sync.WaitGroup
+	results := make(chan Result, numRequests)
+	// Add burst flag
+
+	for i := 0; i < bursts; i++ {
+		for j := 0; j < numRequests; j++ {
+			wg.Add(1)
+			go makeRequest(url, method, &wg, results)
+		}
+		time.Sleep(time.Second * time.Duration(rate))
+	}
+
+	wg.Wait()
+	close(results)
+
+	resultSlice := make([]Result, 0, numRequests)
+	for result := range results {
+		resultSlice = append(resultSlice, result)
+	}
+	return resultSlice
+}
+
+func randomLoad(url string, numRequests, rate int, method string) []Result {
+	var wg sync.WaitGroup
+	results := make(chan Result, numRequests)
+
+	for i := 0; i < numRequests; i++ {
+		wg.Add(1)
+		go makeRequest(url, method, &wg, results)
+		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond / time.Duration(rate))
+	}
+	wg.Wait()
+	close(results)
 	resultSlice := make([]Result, 0, numRequests)
 	for result := range results {
 		resultSlice = append(resultSlice, result)
