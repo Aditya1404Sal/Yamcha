@@ -27,11 +27,11 @@ func main() {
 	switch strings.ToLower(*attacktype) {
 	case "basic":
 		results = basicAttack(*url, *numReq, *rate, *method)
-	//Note to self : add more cases for different attack types like : Distributed, prolonged etc.
 	default:
 		fmt.Println("Unknown attack type:", *attacktype)
 		return
 	}
+	displayMetrics(results)
 
 	if *plot {
 		plotResults(results)
