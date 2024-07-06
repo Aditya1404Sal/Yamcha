@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"runtime"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -20,6 +21,7 @@ func main() {
 	burst := hfs.Int("burst", 5, "Number of bursts for burst load attack")
 	stepSize := hfs.Int("stepsize", 10, "step size for ramp up load")
 	spikeInterval := hfs.Int("spikeInterval", 10, "spike interval")
+	duration := flag.Duration("duration", 10*time.Second, "Duration for sustained load tests")
 	hfs.Parse(flag.Args())
 
 	runtime.GOMAXPROCS(*numCPUS)
@@ -37,6 +39,8 @@ func main() {
 		results = rampUpLoad(*url, *numReq, *rate, *method, *stepSize)
 	case "spike":
 		results = spikeLoad(*url, *numReq, *rate, *method, *spikeInterval)
+	case "sustained":
+		results = sustainedLoad(*url, *numReq, *rate, *method, *duration)
 	default:
 		fmt.Println("Unknown attack type:", *attacktype)
 		return

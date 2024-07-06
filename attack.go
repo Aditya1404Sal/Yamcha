@@ -164,3 +164,22 @@ func spikeLoad(url string, numRequests int, rate int, method string, spikeHeight
 	return resultSlice
 
 }
+
+func sustainedLoad(url string, numRequests int, rate int, method string, duration time.Duration) []Result {
+	var wg sync.WaitGroup
+	results := make(chan Result, numRequests)
+	end := time.Now().Add(duration)
+
+	for time.Now().Before(end) {
+		wg.Add(1)
+		go makeRequest(url, method, &wg, results)
+		time.Sleep(time.Second / time.Duration(rate))
+	}
+	wg.Wait()
+	close(results)
+	resultSlice := make([]Result, 0, numRequests)
+	for result := range results {
+		resultSlice = append(resultSlice, result)
+	}
+	return resultSlice
+}
