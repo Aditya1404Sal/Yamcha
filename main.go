@@ -9,20 +9,20 @@ import (
 )
 
 func main() {
-	hfs := flag.NewFlagSet("yamcha", flag.ExitOnError)
-
-	url := hfs.String("url", "http://localhost:8080", "Site where you want to attack")
-	numReq := hfs.Int("requests", 110, "Number of requests to send")
-	attacktype := hfs.String("attack", "steady", "type of attack")
-	plot := hfs.Bool("plot", true, "Do ya wanna plot da test as a timeseries ?")
-	numCPUS := hfs.Int("cpus", runtime.NumCPU(), "Number of CPUs to use")
-	method := hfs.String("method", "GET", "HTTP method to use (GET, POST, etc.)")
-	rate := hfs.Int("rate", 20, "Number of requests per second")
-	burst := hfs.Int("burst", 5, "Number of bursts for burst load attack")
-	stepSize := hfs.Int("stepsize", 10, "step size for ramp up load")
-	spikeInterval := hfs.Int("spikeInterval", 10, "spike interval")
+	url := flag.String("url", "http://localhost:8080", "Site where you want to attack")
+	numReq := flag.Int("requests", 110, "Number of requests to send")
+	attacktype := flag.String("attack", "steady", "type of attack")
+	plot := flag.Bool("plot", true, "Do ya wanna plot da test as a timeseries?")
+	numCPUS := flag.Int("cpus", runtime.NumCPU(), "Number of CPUs to use")
+	method := flag.String("method", "GET", "HTTP method to use (GET, POST, etc.)")
+	rate := flag.Int("rate", 30, "Number of requests per second")
+	burst := flag.Int("burst", 5, "Number of bursts for burst load attack")
+	stepSize := flag.Int("stepsize", 10, "step size for ramp up load")
+	spikeInterval := flag.Int("spikeInterval", 10, "spike interval")
 	duration := flag.Duration("duration", 10*time.Second, "Duration for sustained load tests")
-	hfs.Parse(flag.Args())
+
+	// Parse the flags
+	flag.Parse()
 
 	runtime.GOMAXPROCS(*numCPUS)
 

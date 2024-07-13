@@ -89,7 +89,7 @@ func burstLoad(url string, numRequests, rate int, method string, bursts int) []R
 			wg.Add(1)
 			go makeRequest(url, method, &wg, results)
 		}
-		time.Sleep(time.Second * time.Duration(rate))
+		time.Sleep(time.Second / time.Duration(rate))
 	}
 
 	wg.Wait()
