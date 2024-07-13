@@ -36,14 +36,25 @@ go build -o yamcha
 Run a basic load test:
 
 ```bash
-./yamcha --url=https://example.com --requests=100 --rate=10 --method=GET
+./yamcha -url https://example.com -requests 100 -rate 10 -method GET
+```
+
+Or Run a default test for `localhost:8080`
+
+```bash
+./yamcha
 ```
 
 ### Command-line Flags
 
 - `-url`: Specify the URL of the target application.
 - `-requests`: Number of requests to send during the test.
-- `-rate`: Number of requests per second to send.
+- `-attack`: Type of attack to perform (steady, random, burst, rampup, spike, sustained).
 - `-method`: HTTP method to use (GET, POST, etc.).
+- `-rate`: Number of requests per second to send.
+- `-burst`: Number of bursts for burst load attack.
+- `-stepsize`: Step size for ramp up load attack.
+- `-spikeInterval`: Spike interval for spike load attack.
+- `-duration`: Duration for sustained load tests.
 - `-cpus`: Number of CPUs to utilize (optional).
-- `-plot`: Enable plotting of load test results (optional).
+- `-plot`: Enable plotting of load test results as a time series (optional).
