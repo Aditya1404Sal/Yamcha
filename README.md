@@ -21,8 +21,8 @@ Yamcha is a command-line load testing tool written in Go for conducting performa
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/yamcha-load-testing-tool.git
-cd yamcha-load-testing-tool
+git clone https://github.com/your-username/Yamcha.git
+cd Yamcha
 ```
 
 Build the executable:
