@@ -12,6 +12,7 @@ Yamcha is a command-line load testing tool written in Go for conducting performa
 
 - **CLI-based**: Easy-to-use command-line interface for running load tests.
 - **Configurable HTTP Methods**: Supports HTTP methods such as GET and POST for different testing scenarios.
+- **Request Body and Headers**: Allows specifying request body and headers via a JSON file.
 - **Concurrent Request Handling**: Utilizes goroutines (number depends on allowed cpu cores) for concurrent request handling.
 - **CPU Utilization Control**: Allows setting the number of CPUs to utilize during load tests.
 - **Optional Plotting**: Integrates optional plotting functionality to visualize load test results.
@@ -58,3 +59,23 @@ Or Run a default test for `localhost:8080`
 - `-duration`: Duration for sustained load tests.
 - `-cpus`: Number of CPUs to utilize (optional).
 - `-plot`: Enable plotting of load test results as a time series (optional).
+- `-body`: Path to a JSON file specifying request body and headers.
+
+### Example of body.json
+
+```json
+{
+    "Headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer token",
+        "Session-ID" : "Session ID here"
+    },
+    "Body": {
+        "message": "Hello world",
+        "user": "test_user_havoc",
+        "timestamp": "2024-07-15"
+    }
+}
+
+```
+
