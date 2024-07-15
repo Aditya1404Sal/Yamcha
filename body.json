@@ -1,0 +1,12 @@
+{
+    "Headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer your-token-here",
+        "Session-ID": "12345678"
+    },
+    "Body": {
+        "message": "Hello world from a json file",
+        "user": "test_user",
+        "timestamp": "2024-07-15T12:00:00Z"
+    }
+}
