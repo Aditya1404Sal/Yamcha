@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -14,14 +15,26 @@ type Result struct {
 	Error   error
 }
 
-func makeRequest(url string, method string, wg *sync.WaitGroup, results chan<- Result) {
+func makeRequest(url string, method string, headers map[string]string, body string, wg *sync.WaitGroup, results chan<- Result) {
 	defer wg.Done()
 	start := time.Now()
 
-	req, err := http.NewRequest(method, url, nil)
+	var req *http.Request
+	var err error
+
+	if body == "" {
+		req, err = http.NewRequest(method, url, nil)
+	} else {
+		req, err = http.NewRequest(method, url, strings.NewReader(body))
+	}
+
 	if err != nil {
 		results <- Result{Error: err}
 		return
+	}
+
+	for key, value := range headers {
+		req.Header.Set(key, value)
 	}
 
 	client := &http.Client{}
@@ -58,7 +71,7 @@ func displayMetrics(results []Result) {
 	}
 }
 
-func basicAttack(url string, numRequests int, rate int, method string) []Result {
+func basicAttack(url string, numRequests int, rate int, method string, headers map[string]string, body string) []Result {
 	var wg sync.WaitGroup
 	results := make(chan Result, numRequests)
 	ticker := time.NewTicker(time.Second / time.Duration(rate))
@@ -67,7 +80,7 @@ func basicAttack(url string, numRequests int, rate int, method string) []Result 
 	for i := 0; i < numRequests; i++ {
 		wg.Add(1)
 		<-ticker.C
-		go makeRequest(url, method, &wg, results)
+		go makeRequest(url, method, headers, body, &wg, results)
 	}
 	wg.Wait()
 	close(results)
@@ -79,15 +92,14 @@ func basicAttack(url string, numRequests int, rate int, method string) []Result 
 	return resultSlice
 }
 
-func burstLoad(url string, numRequests, rate int, method string, bursts int) []Result {
+func burstLoad(url string, numRequests, rate int, method string, bursts int, headers map[string]string, body string) []Result {
 	var wg sync.WaitGroup
 	results := make(chan Result, numRequests)
-	// Add burst flag
 
 	for i := 0; i < bursts; i++ {
 		for j := 0; j < numRequests; j++ {
 			wg.Add(1)
-			go makeRequest(url, method, &wg, results)
+			go makeRequest(url, method, headers, body, &wg, results)
 		}
 		time.Sleep(time.Second / time.Duration(rate))
 	}
@@ -102,13 +114,13 @@ func burstLoad(url string, numRequests, rate int, method string, bursts int) []R
 	return resultSlice
 }
 
-func randomLoad(url string, numRequests, rate int, method string) []Result {
+func randomLoad(url string, numRequests, rate int, method string, headers map[string]string, body string) []Result {
 	var wg sync.WaitGroup
 	results := make(chan Result, numRequests)
 
 	for i := 0; i < numRequests; i++ {
 		wg.Add(1)
-		go makeRequest(url, method, &wg, results)
+		go makeRequest(url, method, headers, body, &wg, results)
 		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond / time.Duration(rate))
 	}
 	wg.Wait()
@@ -120,13 +132,13 @@ func randomLoad(url string, numRequests, rate int, method string) []Result {
 	return resultSlice
 }
 
-func rampUpLoad(url string, numRequests int, rate int, method string, stepSize int) []Result {
+func rampUpLoad(url string, numRequests int, rate int, method string, stepSize int, headers map[string]string, body string) []Result {
 	var wg sync.WaitGroup
 	results := make(chan Result, numRequests)
 
 	for i := 1; i <= numRequests; i++ {
 		wg.Add(1)
-		go makeRequest(url, method, &wg, results)
+		go makeRequest(url, method, headers, body, &wg, results)
 		if i%stepSize == 0 {
 			time.Sleep(time.Second / time.Duration(rate))
 		}
@@ -141,13 +153,13 @@ func rampUpLoad(url string, numRequests int, rate int, method string, stepSize i
 	return resultSlice
 }
 
-func spikeLoad(url string, numRequests int, rate int, method string, spikeHeight int) []Result {
+func spikeLoad(url string, numRequests int, rate int, method string, spikeHeight int, headers map[string]string, body string) []Result {
 	var wg sync.WaitGroup
 	results := make(chan Result, numRequests)
 
 	for i := 0; i < numRequests; i++ {
 		wg.Add(1)
-		go makeRequest(url, method, &wg, results)
+		go makeRequest(url, method, headers, body, &wg, results)
 		if i%spikeHeight == 0 {
 			time.Sleep(time.Second * time.Duration(rand.Intn(20)))
 		} else {
@@ -162,17 +174,16 @@ func spikeLoad(url string, numRequests int, rate int, method string, spikeHeight
 		resultSlice = append(resultSlice, result)
 	}
 	return resultSlice
-
 }
 
-func sustainedLoad(url string, numRequests int, rate int, method string, duration time.Duration) []Result {
+func sustainedLoad(url string, numRequests int, rate int, method string, duration time.Duration, headers map[string]string, body string) []Result {
 	var wg sync.WaitGroup
 	results := make(chan Result, numRequests)
 	end := time.Now().Add(duration)
 
 	for time.Now().Before(end) {
 		wg.Add(1)
-		go makeRequest(url, method, &wg, results)
+		go makeRequest(url, method, headers, body, &wg, results)
 		time.Sleep(time.Second / time.Duration(rate))
 	}
 	wg.Wait()
