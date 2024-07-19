@@ -17,6 +17,20 @@ type RequestPayload struct {
 	Body    map[string]string `json:"body"`
 }
 
+type TestPayLoad struct {
+	Url            string
+	Req_count      int
+	Attack         string
+	Cpu_count      int16
+	Req_method     string
+	Rate           int
+	Burst_count    int
+	Step_size      int
+	Spike_interval int
+	Duration       time.Duration
+	Body           RequestPayload
+}
+
 func main() {
 	url := flag.String("url", "http://localhost:8080", "Site where you want to attack")
 	numReq := flag.Int("requests", 101, "Number of requests to send")
@@ -33,6 +47,8 @@ func main() {
 	activeConn := flag.Bool("conn", false, "Number of Active connections the goroutines stay alive for")
 	// Parsing the flags
 	flag.Parse()
+
+	os.Mkdir("./results", 0755)
 
 	runtime.GOMAXPROCS(*numCPUS)
 	//Initializing empty payload for casting
@@ -80,6 +96,17 @@ func main() {
 		}
 		bodyContent = nil
 	}
+	testPayload := TestPayLoad{
+		Url:            *url,
+		Req_count:      *numReq,
+		Attack:         *attacktype,
+		Rate:           *rate,
+		Burst_count:    *burst,
+		Step_size:      *stepSize,
+		Spike_interval: *spikeInterval,
+		Duration:       *duration,
+		Body:           payload,
+	}
 
 	fmt.Println("Request headers and body content:")
 	fmt.Println("Headers:", payload.Headers)
@@ -107,6 +134,6 @@ func main() {
 	displayMetrics(results)
 
 	if *plot {
-		plotResults(results)
+		plotResults(results, testPayload)
 	}
 }
