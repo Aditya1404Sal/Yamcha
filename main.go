@@ -19,7 +19,7 @@ type RequestPayload struct {
 
 func main() {
 	url := flag.String("url", "http://localhost:8080", "Site where you want to attack")
-	numReq := flag.Int("requests", 100, "Number of requests to send")
+	numReq := flag.Int("requests", 101, "Number of requests to send")
 	attacktype := flag.String("attack", "steady", "Type of attack")
 	plot := flag.Bool("plot", true, "Do you want to plot the test as a timeseries?")
 	numCPUS := flag.Int("cpus", runtime.NumCPU(), "Number of CPUs to use")
@@ -30,7 +30,7 @@ func main() {
 	spikeInterval := flag.Int("spikeInterval", 10, "Spike interval")
 	duration := flag.Duration("duration", 10*time.Second, "Duration for sustained load tests")
 	bodyFile := flag.String("body", "", "The request body file in JSON format")
-
+	activeConn := flag.Bool("conn", false, "Number of Active connections the goroutines stay alive for")
 	// Parsing the flags
 	flag.Parse()
 
@@ -89,17 +89,17 @@ func main() {
 
 	switch strings.ToLower(*attacktype) {
 	case "steady":
-		results = basicAttack(*url, *numReq, *rate, *method, payload.Headers, string(bodyContent))
+		results = basicAttack(*url, *numReq, *rate, *method, payload.Headers, string(bodyContent), *activeConn)
 	case "random":
-		results = randomLoad(*url, *numReq, *rate, *method, payload.Headers, string(bodyContent))
+		results = randomLoad(*url, *numReq, *rate, *method, payload.Headers, string(bodyContent), *activeConn)
 	case "burst":
-		results = burstLoad(*url, *numReq, *rate, *method, *burst, payload.Headers, string(bodyContent))
+		results = burstLoad(*url, *numReq, *rate, *method, *burst, payload.Headers, string(bodyContent), *activeConn)
 	case "rampup":
-		results = rampUpLoad(*url, *numReq, *rate, *method, *stepSize, payload.Headers, string(bodyContent))
+		results = rampUpLoad(*url, *numReq, *rate, *method, *stepSize, payload.Headers, string(bodyContent), *activeConn)
 	case "spike":
-		results = spikeLoad(*url, *numReq, *rate, *method, *spikeInterval, payload.Headers, string(bodyContent))
+		results = spikeLoad(*url, *numReq, *rate, *method, *spikeInterval, payload.Headers, string(bodyContent), *activeConn)
 	case "sustained":
-		results = sustainedLoad(*url, *numReq, *rate, *method, *duration, payload.Headers, string(bodyContent))
+		results = sustainedLoad(*url, *numReq, *rate, *method, *duration, payload.Headers, string(bodyContent), *activeConn)
 	default:
 		fmt.Println("Unknown attack type:", *attacktype)
 		return
