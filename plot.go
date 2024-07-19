@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
 )
 
-func plotResults(results []Result) {
+func plotResults(results []Result, test_payload TestPayLoad) {
 	line := charts.NewLine()
 
 	xData := make([]int, len(results))
@@ -23,12 +24,19 @@ func plotResults(results []Result) {
 
 	line.SetGlobalOptions(charts.WithTitleOpts(opts.Title{
 		Title:    "Load Test Results",
-		Subtitle: "Response Time per Request",
+		Subtitle: "Response Time in ms per Request",
 	}))
 	line.SetXAxis(xData).AddSeries("Response Time", yData)
 
 	//Chart is saved to an HTML file
-	f, err := os.Create("results.html")
+	currTime := time.Now()
+
+	layout := "2006-01-02_15-04-05"
+
+	formattedTime := currTime.Format(layout)
+
+	filename := fmt.Sprintf("./results/results-%s.html", formattedTime)
+	f, err := os.Create(filename)
 	if err != nil {
 		fmt.Println("Could not create results.html:", err)
 		return
