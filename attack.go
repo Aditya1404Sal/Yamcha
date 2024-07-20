@@ -102,7 +102,7 @@ func basicAttack(url string, numRequests int, rate int, method string, headers m
 
 func burstLoad(url string, numRequests, rate int, method string, bursts int, headers map[string]string, body string, activeconn bool) []Result {
 	var wg sync.WaitGroup
-	results := make(chan Result, numRequests)
+	results := make(chan Result, numRequests*bursts)
 
 	for i := 0; i < bursts; i++ {
 		for j := 0; j < numRequests; j++ {
@@ -110,9 +110,9 @@ func burstLoad(url string, numRequests, rate int, method string, bursts int, hea
 			go makeRequest(url, method, headers, body, &wg, results, activeconn)
 		}
 		time.Sleep(time.Second / time.Duration(rate))
+		wg.Wait()
 	}
 
-	wg.Wait()
 	close(results)
 
 	resultSlice := make([]Result, 0, numRequests)
