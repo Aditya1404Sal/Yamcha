@@ -138,19 +138,23 @@ func plotResults(results []Result, test_payload TestPayLoad) {
 
 	labels := make([]int, len(results))
 	data := make([]int64, len(results))
+	statuses := make([]string, len(results))
 	for i, result := range results {
 		labels[i] = i + 1
 		data[i] = result.Elapsed.Milliseconds()
+		statuses[i] = result.Status
 	}
 
 	templateData := struct {
 		TestPayLoad
-		Labels []int
-		Data   []int64
+		Labels   []int
+		Data     []int64
+		Statuses []string
 	}{
 		TestPayLoad: test_payload,
 		Labels:      labels,
 		Data:        data,
+		Statuses:    statuses,
 	}
 
 	if err := tmpl.Execute(f, templateData); err != nil {
