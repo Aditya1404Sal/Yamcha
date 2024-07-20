@@ -106,6 +106,7 @@ func main() {
 		Spike_interval: *spikeInterval,
 		Duration:       *duration,
 		Body:           payload,
+		Req_method:     *method,
 	}
 
 	fmt.Println("Request headers and body content:")
