@@ -78,4 +78,7 @@ Or Run a default test for `localhost:8080`
 }
 
 ```
+# Result Plot 
+![Screenshot from 2024-07-20 22-04-00](https://github.com/user-attachments/assets/39ad42ed-92c3-4d68-a5ef-f17c467c842f)
+
 
