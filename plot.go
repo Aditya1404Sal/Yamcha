@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -14,6 +16,7 @@ const htmlTemplate = `
     <meta charset="utf-8">
     <title>Load Test Results</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,14 +28,14 @@ const htmlTemplate = `
             justify-content: space-between;
         }
         .tables {
-            width: 50%;
+            width: 40%;
         }
         .chart-container {
-            width: 45%;
+            width: 55%;
         }
         .chart-wrapper {
             width: 100%;
-            height: 400px;
+            height: 600px;
         }
         table {
             width: 100%;
@@ -90,27 +93,63 @@ const htmlTemplate = `
         </div>
     </div>
     <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: {{.Labels}},
-            datasets: [{
-                label: 'Response Time (ms)',
-                data: {{.Data}},
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
+    document.addEventListener('DOMContentLoaded', function() {
+        Chart.register(ChartDataLabels);
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var statuses = {{.Statuses}};
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{.Labels}},
+                datasets: [{
+                    label: 'Response Time (ms)',
+                    data: {{.Data}},
+                    borderColor: 'rgb(0, 256, 256)',
+                    tension: 0.1,
+                    pointBackgroundColor: statuses.map(status => {
+                        if (status >= 200 && status < 300) return 'green';
+                        if (status >= 300 && status < 400) return 'yellow';
+                        if (status >= 400 && status < 500) return 'orange';
+                        if (status >= 500) return 'red';
+                        return 'gray';
+                    }),
+                    pointRadius: 4,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                return 'Status: ' + statuses[context.dataIndex];
+                            }
+                        }
+                    },
+                    datalabels: {
+                        align: 'top',
+                        anchor: 'end',
+                        color: 'black',
+                        font: {
+                            weight: 'bold'
+                        },
+                        formatter: function(value, context) {
+                            return statuses[context.dataIndex];
+                        },
+                        display: function(context) {
+                            return context.dataIndex % Math.ceil(statuses.length / 10) === 0;
+                        }
+                    }
                 }
             }
-        }
+        });
     });
     </script>
 </body>
@@ -138,18 +177,27 @@ func plotResults(results []Result, test_payload TestPayLoad) {
 
 	labels := make([]int, len(results))
 	data := make([]int64, len(results))
-	statuses := make([]string, len(results))
+	statuses := make([]int, len(results))
 	for i, result := range results {
 		labels[i] = i + 1
 		data[i] = result.Elapsed.Milliseconds()
-		statuses[i] = result.Status
+		statusParts := strings.SplitN(result.Status, " ", 2)
+		if len(statusParts) > 0 {
+			if code, err := strconv.Atoi(statusParts[0]); err == nil {
+				statuses[i] = code
+			} else {
+				statuses[i] = 0
+			}
+		} else {
+			statuses[i] = 0
+		}
 	}
 
 	templateData := struct {
 		TestPayLoad
 		Labels   []int
 		Data     []int64
-		Statuses []string
+		Statuses []int
 	}{
 		TestPayLoad: test_payload,
 		Labels:      labels,

@@ -38,10 +38,10 @@ func main() {
 	plot := flag.Bool("plot", true, "Do you want to plot the test as a timeseries?")
 	numCPUS := flag.Int("cpus", runtime.NumCPU(), "Number of CPUs to use")
 	method := flag.String("method", "GET", "HTTP method to use (GET, POST, etc.)")
-	rate := flag.Int("rate", 25, "Number of requests per second")
+	rate := flag.Int("rate", 5, "Number of requests per second")
 	burst := flag.Int("burst", 5, "Number of bursts for burst load attack")
 	stepSize := flag.Int("stepsize", 10, "Step size for ramp-up load")
-	spikeInterval := flag.Int("spikeInterval", 10, "Spike interval")
+	spikeHeight := flag.Int("sh", 10, "Spike Height")
 	duration := flag.Duration("duration", 10*time.Second, "Duration for sustained load tests")
 	bodyFile := flag.String("body", "", "The request body file in JSON format")
 	activeConn := flag.Bool("conn", false, "Number of Active connections the goroutines stay alive for")
@@ -49,7 +49,7 @@ func main() {
 	flag.Parse()
 
 	os.Mkdir("./results", 0755)
-
+	println(runtime.NumCPU())
 	runtime.GOMAXPROCS(*numCPUS)
 	//Initializing empty payload for casting
 	var payload RequestPayload
@@ -103,7 +103,7 @@ func main() {
 		Rate:           *rate,
 		Burst_count:    *burst,
 		Step_size:      *stepSize,
-		Spike_interval: *spikeInterval,
+		Spike_interval: *spikeHeight,
 		Duration:       *duration,
 		Body:           payload,
 		Req_method:     *method,
@@ -125,7 +125,7 @@ func main() {
 	case "rampup":
 		results = rampUpLoad(*url, *numReq, *rate, *method, *stepSize, payload.Headers, string(bodyContent), *activeConn)
 	case "spike":
-		results = spikeLoad(*url, *numReq, *rate, *method, *spikeInterval, payload.Headers, string(bodyContent), *activeConn)
+		results = spikeLoad(*url, *numReq, *rate, *method, *spikeHeight, payload.Headers, string(bodyContent), *activeConn)
 	case "sustained":
 		results = sustainedLoad(*url, *numReq, *rate, *method, *duration, payload.Headers, string(bodyContent), *activeConn)
 	default:
