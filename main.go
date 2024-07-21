@@ -18,17 +18,19 @@ type RequestPayload struct {
 }
 
 type TestPayLoad struct {
-	Url            string
-	Req_count      int
-	Attack         string
-	Cpu_count      int16
-	Req_method     string
-	Rate           int
-	Burst_count    int
-	Step_size      int
-	Spike_interval int
-	Duration       time.Duration
-	Body           RequestPayload
+	Url               string
+	Req_count         int
+	Attack            string
+	Cpu_count         int
+	Req_method        string
+	Rate              int
+	Burst_count       int
+	Step_size         int
+	Spike_Height      int
+	Duration          time.Duration
+	Req_Body          string
+	Active_connection bool
+	Req_pkt           RequestPayload
 }
 
 func main() {
@@ -38,7 +40,7 @@ func main() {
 	plot := flag.Bool("plot", true, "Do you want to plot the test as a timeseries?")
 	numCPUS := flag.Int("cpus", runtime.NumCPU(), "Number of CPUs to use")
 	method := flag.String("method", "GET", "HTTP method to use (GET, POST, etc.)")
-	rate := flag.Int("rate", 5, "Number of requests per second")
+	rate := flag.Int("rate", 20, "Number of requests per second")
 	burst := flag.Int("burst", 5, "Number of bursts for burst load attack")
 	stepSize := flag.Int("stepsize", 10, "Step size for ramp-up load")
 	spikeHeight := flag.Int("sh", 10, "Spike Height")
@@ -97,16 +99,19 @@ func main() {
 		bodyContent = nil
 	}
 	testPayload := TestPayLoad{
-		Url:            *url,
-		Req_count:      *numReq,
-		Attack:         *attacktype,
-		Rate:           *rate,
-		Burst_count:    *burst,
-		Step_size:      *stepSize,
-		Spike_interval: *spikeHeight,
-		Duration:       *duration,
-		Body:           payload,
-		Req_method:     *method,
+		Url:               *url,
+		Req_count:         *numReq,
+		Attack:            *attacktype,
+		Rate:              *rate,
+		Burst_count:       *burst,
+		Step_size:         *stepSize,
+		Spike_Height:      *spikeHeight,
+		Duration:          *duration,
+		Req_Body:          string(bodyContent),
+		Req_pkt:           payload,
+		Req_method:        *method,
+		Cpu_count:         *numCPUS,
+		Active_connection: *activeConn,
 	}
 
 	fmt.Println("Request headers and body content:")
@@ -117,17 +122,17 @@ func main() {
 
 	switch strings.ToLower(*attacktype) {
 	case "steady":
-		results = basicAttack(*url, *numReq, *rate, *method, payload.Headers, string(bodyContent), *activeConn)
+		results = basicAttack(testPayload)
 	case "random":
-		results = randomLoad(*url, *numReq, *rate, *method, payload.Headers, string(bodyContent), *activeConn)
+		results = randomLoad(testPayload)
 	case "burst":
-		results = burstLoad(*url, *numReq, *rate, *method, *burst, payload.Headers, string(bodyContent), *activeConn)
+		results = burstLoad(testPayload)
 	case "rampup":
-		results = rampUpLoad(*url, *numReq, *rate, *method, *stepSize, payload.Headers, string(bodyContent), *activeConn)
+		results = rampUpLoad(testPayload)
 	case "spike":
-		results = spikeLoad(*url, *numReq, *rate, *method, *spikeHeight, payload.Headers, string(bodyContent), *activeConn)
-	case "sustained":
-		results = sustainedLoad(*url, *numReq, *rate, *method, *duration, payload.Headers, string(bodyContent), *activeConn)
+		results = spikeLoad(testPayload)
+	// case "sustained":
+	// 	results = sustainedLoad(testPayload)
 	default:
 		fmt.Println("Unknown attack type:", *attacktype)
 		return

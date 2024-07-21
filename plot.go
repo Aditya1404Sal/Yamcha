@@ -67,20 +67,20 @@ const htmlTemplate = `
                 <tr><td>Rate</td><td>{{.Rate}}</td></tr>
                 <tr><td>Burst Count</td><td>{{.Burst_count}}</td></tr>
                 <tr><td>Step Size</td><td>{{.Step_size}}</td></tr>
-                <tr><td>Spike Interval</td><td>{{.Spike_interval}}</td></tr>
+                <tr><td>Spike Height</td><td>{{.Spike_Height}}</td></tr>
                 <tr><td>Duration</td><td>{{.Duration}}</td></tr>
             </table>
             <h3>Request Headers</h3>
             <table>
                 <tr><th>Key</th><th>Value</th></tr>
-                {{range $key, $value := .Body.Headers}}
+                {{range $key, $value := .Req_pkt.Headers}}
                 <tr><td>{{$key}}</td><td>{{$value}}</td></tr>
                 {{end}}
             </table>
             <h3>Request Body</h3>
             <table>
                 <tr><th>Key</th><th>Value</th></tr>
-                {{range $key, $value := .Body.Body}}
+                {{range $key, $value := .Req_pkt.Body}}
                 <tr><td>{{$key}}</td><td>{{$value}}</td></tr>
                 {{end}}
             </table>
