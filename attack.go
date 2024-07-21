@@ -79,124 +79,124 @@ func displayMetrics(results []Result) {
 	}
 }
 
-func basicAttack(url string, numRequests int, rate int, method string, headers map[string]string, body string, activeconn bool) []Result {
+func basicAttack(tp TestPayLoad) []Result {
 	var wg sync.WaitGroup
-	results := make(chan Result, numRequests)
-	ticker := time.NewTicker(time.Second / time.Duration(rate))
+	results := make(chan Result, tp.Req_count)
+	ticker := time.NewTicker(time.Second / time.Duration(tp.Rate))
 	defer ticker.Stop()
 
-	for i := 0; i < numRequests; i++ {
+	for i := 0; i < tp.Req_count; i++ {
 		wg.Add(1)
 		<-ticker.C
-		go makeRequest(url, method, headers, body, &wg, results, activeconn)
+		go makeRequest(tp.Url, tp.Req_method, tp.Req_pkt.Headers, tp.Req_Body, &wg, results, tp.Active_connection)
 	}
 	wg.Wait()
 	close(results)
 
-	resultSlice := make([]Result, 0, numRequests)
+	resultSlice := make([]Result, 0, tp.Req_count)
 	for result := range results {
 		resultSlice = append(resultSlice, result)
 	}
 	return resultSlice
 }
 
-func burstLoad(url string, numRequests, rate int, method string, bursts int, headers map[string]string, body string, activeconn bool) []Result {
+func burstLoad(tp TestPayLoad) []Result {
 	var wg sync.WaitGroup
-	results := make(chan Result, numRequests*bursts)
+	results := make(chan Result, tp.Req_count*tp.Burst_count)
 
-	for i := 0; i < bursts; i++ {
-		for j := 0; j < numRequests; j++ {
+	for i := 0; i < tp.Burst_count; i++ {
+		for j := 0; j < tp.Req_count; j++ {
 			wg.Add(1)
-			go makeRequest(url, method, headers, body, &wg, results, activeconn)
+			go makeRequest(tp.Url, tp.Req_method, tp.Req_pkt.Headers, tp.Req_Body, &wg, results, tp.Active_connection)
 		}
-		time.Sleep(time.Second / time.Duration(rate))
+		time.Sleep(time.Second / time.Duration(tp.Rate))
 		wg.Wait()
 	}
 
 	close(results)
 
-	resultSlice := make([]Result, 0, numRequests)
+	resultSlice := make([]Result, 0, tp.Req_count)
 	for result := range results {
 		resultSlice = append(resultSlice, result)
 	}
 	return resultSlice
 }
 
-func randomLoad(url string, numRequests, rate int, method string, headers map[string]string, body string, activeconn bool) []Result {
+func randomLoad(tp TestPayLoad) []Result {
 	var wg sync.WaitGroup
-	results := make(chan Result, numRequests)
+	results := make(chan Result, tp.Req_count)
 
-	for i := 0; i < numRequests; i++ {
+	for i := 0; i < tp.Req_count; i++ {
 		wg.Add(1)
-		go makeRequest(url, method, headers, body, &wg, results, activeconn)
-		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond / time.Duration(rate))
+		go makeRequest(tp.Url, tp.Req_method, tp.Req_pkt.Headers, tp.Req_Body, &wg, results, tp.Active_connection)
+		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond / time.Duration(tp.Rate))
 	}
 	wg.Wait()
 	close(results)
-	resultSlice := make([]Result, 0, numRequests)
+	resultSlice := make([]Result, 0, tp.Req_count)
 	for result := range results {
 		resultSlice = append(resultSlice, result)
 	}
 	return resultSlice
 }
 
-func rampUpLoad(url string, numRequests int, rate int, method string, stepSize int, headers map[string]string, body string, activeconn bool) []Result {
+func rampUpLoad(tp TestPayLoad) []Result {
 	var wg sync.WaitGroup
-	results := make(chan Result, numRequests)
+	results := make(chan Result, tp.Req_count)
 
-	for i := 1; i <= numRequests; i++ {
+	for i := 1; i <= tp.Req_count; i++ {
 		wg.Add(1)
-		go makeRequest(url, method, headers, body, &wg, results, activeconn)
-		if i%stepSize == 0 {
-			time.Sleep(time.Second / time.Duration(rate))
+		go makeRequest(tp.Url, tp.Req_method, tp.Req_pkt.Headers, tp.Req_Body, &wg, results, tp.Active_connection)
+		if i%tp.Step_size == 0 {
+			time.Sleep(time.Second / time.Duration(tp.Rate))
 		}
 	}
 	wg.Wait()
 	close(results)
 
-	resultSlice := make([]Result, 0, numRequests)
+	resultSlice := make([]Result, 0, tp.Req_count)
 	for result := range results {
 		resultSlice = append(resultSlice, result)
 	}
 	return resultSlice
 }
 
-func spikeLoad(url string, numRequests int, rate int, method string, spikeHeight int, headers map[string]string, body string, activeconn bool) []Result {
+func spikeLoad(tp TestPayLoad) []Result {
 	var wg sync.WaitGroup
-	results := make(chan Result, numRequests)
+	results := make(chan Result, tp.Req_count)
 
-	for i := 0; i < numRequests; i++ {
+	for i := 0; i < tp.Req_count; i++ {
 		wg.Add(1)
-		go makeRequest(url, method, headers, body, &wg, results, activeconn)
-		if i%spikeHeight == 0 {
+		go makeRequest(tp.Url, tp.Req_method, tp.Req_pkt.Headers, tp.Req_Body, &wg, results, tp.Active_connection)
+		if i%tp.Spike_Height == 0 {
 			time.Sleep(time.Second * time.Duration(rand.Intn(20)))
 		} else {
-			time.Sleep(time.Second / time.Duration(rate))
+			time.Sleep(time.Second / time.Duration(tp.Rate))
 		}
 	}
 	wg.Wait()
 	close(results)
 
-	resultSlice := make([]Result, 0, numRequests)
+	resultSlice := make([]Result, 0, tp.Req_count)
 	for result := range results {
 		resultSlice = append(resultSlice, result)
 	}
 	return resultSlice
 }
 
-func sustainedLoad(url string, numRequests int, rate int, method string, duration time.Duration, headers map[string]string, body string, activeconn bool) []Result {
+func sustainedLoad(tp TestPayLoad) []Result {
 	var wg sync.WaitGroup
-	results := make(chan Result, numRequests)
-	end := time.Now().Add(duration)
+	results := make(chan Result, tp.Req_count)
+	end := time.Now().Add(tp.Duration)
 
 	for time.Now().Before(end) {
 		wg.Add(1)
-		go makeRequest(url, method, headers, body, &wg, results, activeconn)
-		time.Sleep(time.Second / time.Duration(rate))
+		go makeRequest(tp.Url, tp.Req_method, tp.Req_pkt.Headers, tp.Req_Body, &wg, results, tp.Active_connection)
+		time.Sleep(time.Second / time.Duration(tp.Rate))
 	}
 	wg.Wait()
 	close(results)
-	resultSlice := make([]Result, 0, numRequests)
+	resultSlice := make([]Result, 0, tp.Req_count)
 	for result := range results {
 		resultSlice = append(resultSlice, result)
 	}
