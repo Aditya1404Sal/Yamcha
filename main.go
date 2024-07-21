@@ -40,7 +40,7 @@ func main() {
 	plot := flag.Bool("plot", true, "Do you want to plot the test as a timeseries?")
 	numCPUS := flag.Int("cpus", runtime.NumCPU(), "Number of CPUs to use")
 	method := flag.String("method", "GET", "HTTP method to use (GET, POST, etc.)")
-	rate := flag.Int("rate", 5, "Number of requests per second")
+	rate := flag.Int("rate", 20, "Number of requests per second")
 	burst := flag.Int("burst", 5, "Number of bursts for burst load attack")
 	stepSize := flag.Int("stepsize", 10, "Step size for ramp-up load")
 	spikeHeight := flag.Int("sh", 10, "Spike Height")
@@ -131,8 +131,8 @@ func main() {
 		results = rampUpLoad(testPayload)
 	case "spike":
 		results = spikeLoad(testPayload)
-	case "sustained":
-		results = sustainedLoad(testPayload)
+	// case "sustained":
+	// 	results = sustainedLoad(testPayload)
 	default:
 		fmt.Println("Unknown attack type:", *attacktype)
 		return

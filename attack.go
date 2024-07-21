@@ -184,21 +184,22 @@ func spikeLoad(tp TestPayLoad) []Result {
 	return resultSlice
 }
 
-func sustainedLoad(tp TestPayLoad) []Result {
-	var wg sync.WaitGroup
-	results := make(chan Result, tp.Req_count)
-	end := time.Now().Add(tp.Duration)
+// In Progress
+// func sustainedLoad(tp TestPayLoad) []Result {
+// 	var wg sync.WaitGroup
+// 	results := make(chan Result, tp.Req_count)
+// 	end := time.Now().Add(tp.Duration)
 
-	for time.Now().Before(end) {
-		wg.Add(1)
-		go makeRequest(tp.Url, tp.Req_method, tp.Req_pkt.Headers, tp.Req_Body, &wg, results, tp.Active_connection)
-		time.Sleep(time.Second / time.Duration(tp.Rate))
-	}
-	wg.Wait()
-	close(results)
-	resultSlice := make([]Result, 0, tp.Req_count)
-	for result := range results {
-		resultSlice = append(resultSlice, result)
-	}
-	return resultSlice
-}
+// 	for time.Now().Before(end) {
+// 		wg.Add(1)
+// 		go makeRequest(tp.Url, tp.Req_method, tp.Req_pkt.Headers, tp.Req_Body, &wg, results, tp.Active_connection)
+// 		time.Sleep(time.Second / time.Duration(tp.Rate))
+// 	}
+// 	wg.Wait()
+// 	close(results)
+// 	resultSlice := make([]Result, 0, tp.Req_count)
+// 	for result := range results {
+// 		resultSlice = append(resultSlice, result)
+// 	}
+// 	return resultSlice
+// }
