@@ -8,6 +8,8 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 // RequestPayload represents the structure of the JSON file containing headers and body
@@ -51,7 +53,7 @@ func main() {
 	flag.Parse()
 
 	os.Mkdir("./results", 0755)
-	println(runtime.NumCPU())
+
 	runtime.GOMAXPROCS(*numCPUS)
 	//Initializing empty payload for casting
 	var payload RequestPayload
@@ -117,20 +119,22 @@ func main() {
 	fmt.Println("Request headers and body content:")
 	fmt.Println("Headers:", payload.Headers)
 	fmt.Println("Body:", string(bodyContent))
+	fmt.Println("Test Status: ")
+	bar := progressbar.Default(int64(*numReq))
 
 	results := make([]Result, *numReq)
 
 	switch strings.ToLower(*attacktype) {
 	case "steady":
-		results = basicAttack(testPayload)
+		results = basicAttack(testPayload, bar)
 	case "random":
-		results = randomLoad(testPayload)
+		results = randomLoad(testPayload, bar)
 	case "burst":
 		results = burstLoad(testPayload)
 	case "rampup":
-		results = rampUpLoad(testPayload)
+		results = rampUpLoad(testPayload, bar)
 	case "spike":
-		results = spikeLoad(testPayload)
+		results = spikeLoad(testPayload, bar)
 	// case "sustained":
 	// 	results = sustainedLoad(testPayload)
 	default:
