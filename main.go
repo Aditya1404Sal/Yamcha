@@ -115,14 +115,17 @@ func main() {
 		Cpu_count:         *numCPUS,
 		Active_connection: *activeConn,
 	}
-
-	fmt.Println("Request headers and body content:")
-	fmt.Println("Headers:", payload.Headers)
-	fmt.Println("Body:", string(bodyContent))
+	if bodyContent != nil {
+		fmt.Println("Request headers and body content:")
+		fmt.Println("Headers:", payload.Headers)
+		fmt.Println("Body:", string(bodyContent))
+	}
 	fmt.Println("Test Status: ")
 	bar := progressbar.Default(int64(*numReq))
 
 	results := make([]Result, *numReq)
+	//Track How much time it takes for a test to complete
+	startTime := time.Now()
 
 	switch strings.ToLower(*attacktype) {
 	case "steady":
@@ -142,6 +145,9 @@ func main() {
 		return
 	}
 	displayMetrics(results)
+	// Display How much time it took to complete this Test
+	elapsed := time.Since(startTime)
+	fmt.Println("Test Completed in : ", elapsed)
 
 	if *plot {
 		plotResults(results, testPayload)
