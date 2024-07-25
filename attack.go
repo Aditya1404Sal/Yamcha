@@ -77,8 +77,8 @@ func displayMetrics(results []Result) {
 	}
 
 	fmt.Printf("\nTotal Requests: %d\n", len(results))
-	fmt.Printf("Successful Requests: %d\n", successCount)
-	fmt.Printf("Failed Requests: %d\n", errorCount)
+	fmt.Printf("Successful Requests: %d | Success Rate: %.2f%%\n", successCount, (float64(successCount)/float64(len(results)))*100)
+	fmt.Printf("Failed Requests:       %d | Error Rate:   %.2f%%\n", errorCount, (float64(errorCount)/float64(len(results)))*100)
 	if successCount > 0 {
 		fmt.Printf("Average Response Time: %v\n", totalDuration/time.Duration(successCount))
 	}
