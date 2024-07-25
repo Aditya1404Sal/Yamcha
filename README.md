@@ -11,11 +11,13 @@ Yamcha is a command-line load testing tool written in Go for conducting performa
 ## Features
 
 - **CLI-based**: Easy-to-use command-line interface for running load tests.
+- **Various Attack Patterns**: Supports Multiple attack variations like Steady, Burst, Spike, Random, Ramp-Up with more to come.
 - **Configurable HTTP Methods**: Supports HTTP methods such as GET and POST for different testing scenarios.
 - **Request Body and Headers**: Allows specifying request body and headers via a JSON file.
 - **Concurrent Request Handling**: Utilizes goroutines (number depends on allowed cpu cores) for concurrent request handling.
 - **CPU Utilization Control**: Allows setting the number of CPUs to utilize during load tests.
 - **Optional Plotting**: Integrates optional plotting functionality to visualize load test results.
+- **Live Test Progress**: Allows seamless visualization of test progress.
 
 ## Installation
 
@@ -64,6 +66,12 @@ Or Run a default test for `localhost:8080`
 
 ### Test Status Bar
 Enhance your load testing experience with a real-time progress bar, thanks to the `github.com/schollz/progressbar/v3 library`. The progress bar provides visual feedback on the test's progress, helping you to track the status of your load tests efficiently.
+
+![Screenshot from 2024-07-25 22-37-56](https://github.com/user-attachments/assets/9845d172-4163-46fc-a899-e7659b459f16)
+---
+![Screenshot from 2024-07-25 22-38-11](https://github.com/user-attachments/assets/227ab384-ba22-41fe-a1f4-c1f55a8384f1)
+
+
 
 ### Example of body.json
 
