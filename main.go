@@ -37,18 +37,18 @@ type TestPayLoad struct {
 
 func main() {
 	url := flag.String("url", "http://localhost:8080", "Site where you want to attack")
-	numReq := flag.Int("requests", 101, "Number of requests to send")
+	numReq := flag.Int("req", 101, "Number of requests to send")
 	attacktype := flag.String("attack", "steady", "Type of attack")
 	plot := flag.Bool("plot", true, "Do you want to plot the test as a timeseries?")
-	numCPUS := flag.Int("cpus", runtime.NumCPU(), "Number of CPUs to use")
+	numCPUS := flag.Int("cpu", runtime.NumCPU(), "Number of CPUs to use")
 	method := flag.String("method", "GET", "HTTP method to use (GET, POST, etc.)")
 	rate := flag.Int("rate", 20, "Number of requests per second")
 	burst := flag.Int("burst", 5, "Number of bursts for burst load attack")
 	stepSize := flag.Int("stepsize", 10, "Step size for ramp-up load")
 	spikeHeight := flag.Int("sh", 10, "Spike Height")
-	duration := flag.Duration("duration", 10*time.Second, "Duration for sustained load tests")
+	duration := flag.Duration("dur", 10*time.Second, "Duration for sustained load tests")
 	bodyFile := flag.String("body", "", "The request body file in JSON format")
-	activeConn := flag.Bool("conn", false, "Number of Active connections the goroutines stay alive for")
+	activeConn := flag.Bool("conn", false, "Number of Active connections")
 	// Parsing the flags
 	flag.Parse()
 

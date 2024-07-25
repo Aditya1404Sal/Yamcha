@@ -49,17 +49,21 @@ Or Run a default test for `localhost:8080`
 ### Command-line Flags
 
 - `-url`: Specify the URL of the target application.
-- `-requests`: Number of requests to send during the test.
+- `-req`: Number of requests to send during the test.
 - `-attack`: Type of attack to perform (steady, random, burst, rampup, spike, sustained).
 - `-method`: HTTP method to use (GET, POST, etc.).
 - `-rate`: Number of requests per second to send.
 - `-burst`: Number of bursts for burst load attack.
 - `-stepsize`: Step size for ramp up load attack.
 - `-spikeInterval`: Spike interval for spike load attack.
-- `-duration`: Duration for sustained load tests.
+- `-dur`: Duration for sustained load tests.
 - `-cpus`: Number of CPUs to utilize (optional).
 - `-plot`: Enable plotting of load test results as a time series (optional).
 - `-body`: Path to a JSON file specifying request body and headers.
+- `-conn`: Number of Active connections
+
+### Test Status Bar
+Enhance your load testing experience with a real-time progress bar, thanks to the `github.com/schollz/progressbar/v3 library`. The progress bar provides visual feedback on the test's progress, helping you to track the status of your load tests efficiently.
 
 ### Example of body.json
 
