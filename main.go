@@ -44,7 +44,7 @@ func main() {
 	method := flag.String("method", "GET", "HTTP method to use (GET, POST, etc.)")
 	rate := flag.Int("rate", 20, "Number of requests per second")
 	burst := flag.Int("burst", 5, "Number of bursts for burst load attack")
-	stepSize := flag.Int("stepsize", 10, "Step size for ramp-up load")
+	stepSize := flag.Int("ss", 10, "Step size for ramp-up load")
 	spikeHeight := flag.Int("sh", 10, "Spike Height")
 	duration := flag.Duration("dur", 10*time.Second, "Duration for sustained load tests")
 	bodyFile := flag.String("body", "", "The request body file in JSON format")
