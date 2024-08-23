@@ -34,6 +34,21 @@ Build the executable:
 go build -o yamcha
 ```
 
+Add the binary to the global scope
+
+```bash
+#If using zsh
+nano ~/.zshrc
+#if using bash
+nano ~/.bashrc
+```
+
+and add the path to the binary using
+
+```bash
+export PATH="$PATH:/complete_path_to_cloned_repo/yamcha"
+```
+
 ## Usage
 
 Run a basic load test:
