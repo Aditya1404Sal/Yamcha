@@ -1,0 +1,53 @@
+# Yamcha Load Test Configuration
+# This is an example configuration file showing all available options
+
+# Target configuration
+target:
+  url: "https://httpbin.org/get"
+  method: "GET"
+  headers:
+    Content-Type: "application/json"
+    User-Agent: "Yamcha-LoadTester/2.0"
+    Authorization: "Bearer your-token-here"
+  body:
+    message: "Hello from Yamcha"
+    timestamp: "2025-07-01T12:00:00Z"
+
+# Load testing configuration
+load:
+  attack_type: "steady"          # steady, burst, spike, rampup, random, sustained
+  requests: 100                  # Number of requests (ignored for sustained)
+  rate: 20                       # Requests per second
+  duration: 30s                  # Duration for sustained attacks
+  burst_count: 5                 # Number of bursts for burst attack
+  step_size: 10                  # Step size for ramp-up attack
+  spike_height: 10               # Spike interval for spike attack
+  max_workers: 50                # Maximum concurrent workers
+
+# HTTP client configuration
+http:
+  timeout: 30s                   # Request timeout
+  keep_alive: true               # Enable HTTP keep-alive
+  max_idle_conns: 100            # Maximum idle connections
+  max_idle_conns_per_host: 10    # Maximum idle connections per host
+  idle_conn_timeout: 45s         # Idle connection timeout
+  disable_tls_verify: false      # Disable TLS certificate verification
+
+# System configuration
+system:
+  cpu_count: 0                   # Number of CPUs to use (0 = all available)
+  enable_pprof: false            # Enable pprof profiling
+  pprof_port: 6060              # Port for pprof server
+
+# Output configuration
+output:
+  directory: "./results"         # Output directory
+  formats: ["html", "json", "csv"] # Output formats
+  filename: ""                   # Custom filename (without extension)
+
+# Reporting configuration
+reporting:
+  enable_plot: true              # Enable HTML plots
+  enable_progress: true          # Enable progress bar
+  enable_real_time: false        # Enable real-time metrics
+  update_interval: 1s            # Real-time update interval

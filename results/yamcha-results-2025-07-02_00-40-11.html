@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamcha Load Test Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        .stats-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+        .stat-card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.1em;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+        .stat-value {
+            font-weight: bold;
+            color: #333;
+        }
+        .chart-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .error { color: #dc3545; }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Yamcha Load Test Results</h1>
+            <p>Generated on 2025-07-02 00:40:22</p>
+        </div>
+        
+        <div class="content">
+            <div class="stats-section">
+                <div class="stat-card">
+                    <h3>Test Configuration</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Target URL:</span>
+                        <span class="stat-value">http://localhost:8080</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Attack Type:</span>
+                        <span class="stat-value">steady</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">HTTP Method:</span>
+                        <span class="stat-value">GET</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Rate (req/s):</span>
+                        <span class="stat-value">20</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Summary</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Requests:</span>
+                        <span class="stat-value">100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Successful:</span>
+                        <span class="stat-value success">100 (100.00%)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Failed:</span>
+                        <span class="stat-value error">0 (0.00%)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Duration:</span>
+                        <span class="stat-value">11.101889226s</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Throughput:</span>
+                        <span class="stat-value">9.01 req/s</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Response Times</h3>
+                    <div class="stat-item">
+                        <span class="stat-label">Average:</span>
+                        <span class="stat-value">865.588µs</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Minimum:</span>
+                        <span class="stat-value">297.701µs</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Maximum:</span>
+                        <span class="stat-value">3.259566ms</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Median (P50):</span>
+                        <span class="stat-value">726.466µs</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">95th Percentile:</span>
+                        <span class="stat-value">1.623655ms</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">99th Percentile:</span>
+                        <span class="stat-value">2.733431ms</span>
+                    </div>
+                </div>
+
+                
+                <div class="stat-card">
+                    <h3>Status Code Distribution</h3>
+                    
+                    <div class="stat-item">
+                        <span class="stat-label">200:</span>
+                        <span class="stat-value">100</span>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <div class="chart-section">
+                <h3>Response Time Chart</h3>
+                <div class="chart-container">
+                    <canvas id="responseChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Generated by Yamcha Load Testing Tool v2.0</p>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('responseChart').getContext('2d');
+        const statusCodes = [200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200];
+        const responseData = [1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,2,1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,1,1,0,0,1,0,0];
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],
+                datasets: [{
+                    label: 'Response Time (ms)',
+                    data: responseData,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: statusCodes.map(code => {
+                        if (code >= 200 && code < 300) return '#28a745';
+                        if (code >= 300 && code < 400) return '#ffc107';
+                        if (code >= 400 && code < 500) return '#fd7e14';
+                        if (code >= 500) return '#dc3545';
+                        return '#6c757d';
+                    }),
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Response Time (ms)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Request Number'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                return 'Status: ' + statusCodes[context.dataIndex];
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

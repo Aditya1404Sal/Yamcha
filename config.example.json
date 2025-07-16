@@ -1,0 +1,39 @@
+{
+  "target": {
+    "url": "https://api.example.com/users",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "X-API-Version": "v1"
+    },
+    "body": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": "user"
+    }
+  },
+  "load": {
+    "attack_type": "burst",
+    "requests": 50,
+    "rate": 15,
+    "burst_count": 3,
+    "max_workers": 30
+  },
+  "http": {
+    "timeout": "15s",
+    "keep_alive": true,
+    "max_idle_conns": 50,
+    "max_idle_conns_per_host": 5
+  },
+  "output": {
+    "directory": "./test-results",
+    "formats": ["html", "json"]
+  },
+  "reporting": {
+    "enable_plot": true,
+    "enable_progress": true,
+    "enable_real_time": true,
+    "update_interval": "500ms"
+  }
+}

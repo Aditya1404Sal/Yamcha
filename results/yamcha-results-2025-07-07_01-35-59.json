@@ -1,0 +1,123 @@
+{
+  "config": {
+    "target": {
+      "url": "http://127.0.0.1:8888",
+      "method": "GET",
+      "headers": {},
+      "body": null
+    },
+    "load": {
+      "attack_type": "steady",
+      "requests": 5,
+      "rate": 2,
+      "duration": 10000000000,
+      "burst_count": 5,
+      "step_size": 10,
+      "spike_height": 10,
+      "max_workers": 100
+    },
+    "http": {
+      "timeout": 30000000000,
+      "keep_alive": true,
+      "max_idle_conns": 100,
+      "max_idle_conns_per_host": 10,
+      "idle_conn_timeout": 45000000000,
+      "disable_tls_verify": false
+    },
+    "system": {
+      "cpu_count": 12,
+      "enable_pprof": false,
+      "pprof_port": 6060
+    },
+    "output": {
+      "directory": "./results",
+      "formats": [
+        "html",
+        "json"
+      ],
+      "filename": ""
+    },
+    "reporting": {
+      "enable_plot": true,
+      "enable_progress": true,
+      "enable_real_time": true,
+      "update_interval": 1000000000
+    }
+  },
+  "raw_results": [
+    {
+      "start_time": "2025-07-07T01:35:59.895981717+05:30",
+      "end_time": "2025-07-07T01:36:00.351877524+05:30",
+      "elapsed": 455895825,
+      "status_code": 400,
+      "status": "400 Bad Request",
+      "bytes_read": 2540,
+      "bytes_written": 0
+    },
+    {
+      "start_time": "2025-07-07T01:36:00.396113162+05:30",
+      "end_time": "2025-07-07T01:36:00.609374228+05:30",
+      "elapsed": 213261107,
+      "status_code": 200,
+      "status": "200 OK",
+      "bytes_read": 608731,
+      "bytes_written": 0
+    },
+    {
+      "start_time": "2025-07-07T01:35:59.895925491+05:30",
+      "end_time": "2025-07-07T01:36:01.367639256+05:30",
+      "elapsed": 1471713776,
+      "status_code": 200,
+      "status": "200 OK",
+      "bytes_read": 49560,
+      "bytes_written": 0
+    },
+    {
+      "start_time": "2025-07-07T01:36:01.396032894+05:30",
+      "end_time": "2025-07-07T01:36:01.837875402+05:30",
+      "elapsed": 441842528,
+      "status_code": 400,
+      "status": "400 Bad Request",
+      "bytes_read": 2540,
+      "bytes_written": 0
+    },
+    {
+      "start_time": "2025-07-07T01:36:00.896532675+05:30",
+      "end_time": "2025-07-07T01:36:01.837803232+05:30",
+      "elapsed": 941270499,
+      "status_code": 200,
+      "status": "200 OK",
+      "bytes_read": 49560,
+      "bytes_written": 0
+    }
+  ],
+  "statistics": {
+    "total_requests": 5,
+    "successful_requests": 5,
+    "failed_requests": 0,
+    "success_rate": 100,
+    "error_rate": 0,
+    "duration": 6101808712,
+    "requests_per_second": 0.8194291620723622,
+    "bytes_per_second": 116839.29038908225,
+    "avg_response_time": 704796747,
+    "min_response_time": 213261107,
+    "max_response_time": 1471713776,
+    "median_response_time": 455895825,
+    "p95_response_time": 1365625120,
+    "p99_response_time": 1450496044,
+    "status_code_counts": {
+      "200": 3,
+      "400": 2
+    },
+    "error_counts": {},
+    "response_times": [
+      213261107,
+      441842528,
+      455895825,
+      941270499,
+      1471713776
+    ]
+  },
+  "timestamp": "2025-07-06T20:06:05.998647085Z"
+}
